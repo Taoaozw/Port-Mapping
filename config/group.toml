@@ -1,0 +1,33 @@
+#Version = "1.0"
+
+# 默认不分组的mapping直接会被放到default_mapping中
+
+[[GroupRules]]
+Name = "dev"
+RemoteHost = "110.42.172.167"
+
+[[GroupRules.Rules]]
+Name = "traffic"
+LocalPort = 8010
+RemotePort = 8111
+
+
+[[GroupRules.Rules]]
+Name = "leio"
+LocalPort = 8020
+RemotePort = 8111
+
+[[GroupRules]]
+Name = "test"
+RemoteHost = "110.42.172.167"
+
+[[GroupRules.Rules]]
+Name = "dada"
+LocalPort = 8081
+RemotePort = 8111
+
+
+[[GroupRules.Rules]]
+Name = "papap"
+LocalPort = 8081
+RemotePort = 8111
