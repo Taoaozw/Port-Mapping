@@ -4,31 +4,23 @@
 
 [[GroupRules]]
 Name = "dev"
+State = 1
 RemoteHost = "192.168.56.112"
 
 [[GroupRules.Rules]]
 Name = "traffic"
+State = 1
 LocalPort = 8122
 RemotePort = 8122
 
 
-#
-#[[GroupRules.Rules]]
-#Name = "leio"
-#LocalPort = 8020
-#RemotePort = 8111
-#
-#[[GroupRules]]
-#Name = "test"
-#RemoteHost = "110.42.172.167"
-#
-#[[GroupRules.Rules]]
-#Name = "dada"
-#LocalPort = 8081
-#RemotePort = 8111
-#
-#
-#[[GroupRules.Rules]]
-#Name = "papap"
-#LocalPort = 8081
-#RemotePort = 8111
+
+[[GroupRules.Rules]]
+Name = "leio"
+State = 0
+LocalPort = 8020
+RemotePort = 8111
+
+[[GroupRules]]
+Name = "test"
+RemoteHost = "110.42.172.167"

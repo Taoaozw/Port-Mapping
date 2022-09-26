@@ -2,19 +2,25 @@ package parse
 
 import (
 	"github.com/pelletier/go-toml/v2"
-	"io/ioutil"
 	"log"
+	"os"
+	"port-mapping/util"
 )
 
 const (
 	groupFilePath  = "config/group.toml"
 	activeFilePath = "config/mapping.toml"
+
+	DISABLE RuleState = 0
+	ENABLE  RuleState = 1
 )
 
+type RuleState int
 type MappingRules []ForwardingPortRule
 
 type ForwardingPortRule struct {
 	Name       string
+	State      RuleState
 	LocalPort  int
 	RemotePort int
 	RemoteHost string
@@ -28,10 +34,10 @@ type GroupRules struct {
 	Name       string
 	RemoteHost string
 	Rules      MappingRules
+	State      RuleState
 }
 
 type activeMappingPorts struct {
-	ActiveGroups []string
 	MappingRules MappingRules
 }
 
@@ -44,7 +50,7 @@ func GetRules() (MappingRules, error) {
 	if err != nil {
 		return nil, err
 	}
-	activeGroupMappings(&activeRules, &groups)
+	composeGroupMappings(&activeRules, &groups)
 	return activeRules.MappingRules, err
 }
 
@@ -61,20 +67,14 @@ func (rules MappingRules) Contains(rule ForwardingPortRule) bool {
 	return false
 }
 
-func activeGroupMappings(activeRules *activeMappingPorts, ruleGroups *RuleGroups) {
-	if len(activeRules.ActiveGroups) > 0 {
-		for _, groupName := range activeRules.ActiveGroups {
-			for _, rule := range ruleGroups.GroupRules {
-				if rule.Name == groupName {
-					activeRules.MappingRules = append(activeRules.MappingRules, rule.Rules...)
-				}
-			}
-		}
+func composeGroupMappings(activeRules *activeMappingPorts, ruleGroups *RuleGroups) {
+	for _, rule := range ruleGroups.GroupRules {
+		activeRules.MappingRules = append(activeRules.MappingRules, rule.Rules...)
 	}
 }
 
 func mappingRuleGroups(path string) (RuleGroups, error) {
-	file, err := ioutil.ReadFile(path)
+	file, err := os.ReadFile(path)
 	if err != nil {
 		panic(err)
 	}
@@ -83,13 +83,22 @@ func mappingRuleGroups(path string) (RuleGroups, error) {
 	if err != nil {
 		log.Println("Read toml file failed:", err)
 	}
+	ruleGroups.GroupRules = util.Filter(ruleGroups.GroupRules, func(rule *GroupRules) bool {
+		return rule.State == ENABLE
+	})
+	log.Printf("load active service group :%v", ruleGroups.GroupRules)
+	for _, v := range ruleGroups.GroupRules {
+		v.Rules = util.Filter(v.Rules, func(rule ForwardingPortRule) bool {
+			return rule.State == ENABLE
+		})
+	}
 	log.Println("load group service port :", ruleGroups.GroupRules)
 	ruleGroups.fillData()
 	return ruleGroups, err
 }
 
 func activeMappingRules(path string) (activeMappingPorts, error) {
-	file, err := ioutil.ReadFile(path)
+	file, err := os.ReadFile(path)
 	if err != nil {
 		panic(err)
 	}
@@ -98,6 +107,10 @@ func activeMappingRules(path string) (activeMappingPorts, error) {
 	if err != nil {
 		log.Println("Read toml file failed:", err)
 	}
+	rules.MappingRules = util.Filter[ForwardingPortRule](rules.MappingRules, func(rule ForwardingPortRule) bool {
+		return rule.State == ENABLE
+	})
+
 	log.Println("load active service port :", rules.MappingRules)
 	return rules, err
 }

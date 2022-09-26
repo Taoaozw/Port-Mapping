@@ -1,11 +1,17 @@
-ActiveGroups = ["dev"]
+[[MappingRules]]
+Name = "app"
+State = 0
+LocalPort = 19007
+RemoteHost = "192.168.10.130"
+RemotePort = 19007
 
 
 [[MappingRules]]
-Name = "app"
-LocalPort = 19007
-RemoteHost = "192.168.10.146"
-RemotePort = 19007
+Name = "lest"
+State = 1
+LocalPort = 43523
+RemoteHost = "192.168.10.130"
+RemotePort = 7658
 
 #
 #[[MappingRules]]
