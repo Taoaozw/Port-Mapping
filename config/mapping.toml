@@ -1,15 +1,14 @@
 ActiveGroups = ["dev"]
 
 
-
 [[MappingRules]]
-Name = "jetbrain"
-LocalPort = 8089
-RemoteHost = "110.42.172.167"
-RemotePort = 8111
+Name = "app"
+LocalPort = 19007
+RemoteHost = "192.168.10.146"
+RemotePort = 19007
 
-[[MappingRules]]
-Name = "jetbrain2"
-LocalPort = 8083
-RemoteHost = "110.42.172.167"
-RemotePort = 8111
+#
+#[[MappingRules]]
+#Name = "jetbrain2"
+#LocalPort = 8083
+#RemoteHost = "110.42.172.167"

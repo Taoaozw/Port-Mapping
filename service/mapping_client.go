@@ -9,7 +9,6 @@ import (
 type MappingClient struct {
 	SrcConn        net.Conn
 	DestConn       net.Conn
-	DispatchConns  []io.Writer
 	ClosedCallBack func(srcConn net.Conn, destConn net.Conn)
 }
 
@@ -27,7 +26,7 @@ func (_self *MappingClient) StartForward() {
 		_, err := io.Copy(_self.SrcConn, _self.DestConn)
 		if err != nil {
 			log.Println("目标端口返回响应数据异常：", err)
-			_self.StopForward()
+			//_self.StopForward()
 		}
 	}()
 }

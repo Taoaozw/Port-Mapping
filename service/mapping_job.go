@@ -51,7 +51,7 @@ func (_self *MappingTask) doTcpForward(destAddr string) {
 			log.Print("转发出现异常 Forward to Destination Addr err:", err.Error())
 			continue
 		}
-		forwardClient := &MappingClient{fromConnection, toConnection, nil, _self.ClosedCallBack}
+		forwardClient := &MappingClient{fromConnection, toConnection, _self.ClosedCallBack}
 		forwardClient.StartForward()
 		_self.registerClient(_self.getClientId(fromConnection), forwardClient)
 	}
